@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 
 app = FastAPI()
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 table = dynamodb.Table('MyDynamoDBTable2')
 
 class User(BaseModel):
