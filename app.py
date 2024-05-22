@@ -15,6 +15,11 @@ class User(BaseModel):
     email: str
     address: str
 
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
 @app.post("/users/")
 def create_user(user: User):
     try:
