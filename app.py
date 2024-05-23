@@ -116,7 +116,7 @@ def delete_user(id):
 
         item['id'] = int(item['id'])
 
-        response = table.delete_item(Key={'id': id})
+        response = table.delete_item(Key={'id': str(id)})
 
         return jsonify({'message': 'User {} deleted successfully'.format(item), 'response': response}), 200
     
