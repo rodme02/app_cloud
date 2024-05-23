@@ -112,14 +112,14 @@ def update_user():
 @app.route('/delete_user/<int:id>', methods=['DELETE'])
 def delete_user(id):
     try:
-        response = table.get_item(Key={'id': str(id)})
+        response = table.get_item(Key={'id': id})
 
         item = response.get('Item')
 
         if not item:
             return jsonify({'error': 'User not found'}), 404
 
-        delete_response = table.delete_item(Key={'id': str(id)})
+        delete_response = table.delete_item(Key={'id': id})
 
         return jsonify({'message': 'User {} deleted successfully'.format(item), 'response': delete_response}), 200
 
