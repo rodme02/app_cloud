@@ -12,6 +12,8 @@ A escolha da região para implantação deve considerar tanto os custos quanto o
 
 ![Diagrama da Arquitetura](img/diagrama.png)
 
+![Diagrama da Arquitetura](img/diagrama2.png)
+
 Coisas para incluir no diagrama:
 
 VPC com sub-redes públicas e privadas
