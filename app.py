@@ -112,14 +112,17 @@ def update_user():
 @app.route('/delete_user/<int:id>', methods=['DELETE'])
 def delete_user(id):
     try:
-        item = table.get_item(Key={'id': id}).get('Item')
+        response = table.get_item(Key={'id': str(id)})
 
-        response = table.delete_item(Item=item)
+        item = response.get('Item')
 
-        item['id'] = int(item['id'])
+        if not item:
+            return jsonify({'error': 'User not found'}), 404
 
-        return jsonify({'message': 'User {} deleted successfully'.format(item), 'response': response}), 200
-    
+        delete_response = table.delete_item(Key={'id': str(id)})
+
+        return jsonify({'message': 'User {} deleted successfully'.format(item), 'response': delete_response}), 200
+
     except ClientError as e:
         return handle_dynamodb_exception(e)
 
