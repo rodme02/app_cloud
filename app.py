@@ -13,7 +13,6 @@ table = dynamodb.Table('UsersTable')
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-
 @app.route('/health', methods=['GET'])
 def health():
     healthy = {'DynamoDB': 'Healthy'}
@@ -44,14 +43,15 @@ def add_user():
         if not user_data.get('id') or not user_data.get('name'):
             return jsonify({'error': 'id and name are required fields'}), 400
         
-        # Ensure id is included in the item
+        # Ensure id is included in the item and is an integer
         item = {
-            'id': user_data['id'],
+            'id': int(user_data['id']),
             'name': user_data['name'],
         }
         
-        if 'id' in table.get_item(Key={'id': user_data['id']}).get('Item', {}):
-            return jsonify({'error': 'User already exists, post to /update_user to update an user.'}), 400
+        if 'id' in table.get_item(Key={'id': item['id']}).get('Item', {}):
+            return jsonify({'error': 'User already exists, post to /update_user to update a user.'}), 400
+        
         # Save data to DynamoDB
         response = table.put_item(Item=item)
         
@@ -77,7 +77,7 @@ def get_user():
             return jsonify({'error': 'id is a required field'}), 400
         
         # Get user data from DynamoDB
-        response = table.get_item(Key={'id': id})
+        response = table.get_item(Key={'id': int(id)})
         
         return jsonify({'message': 'User retrieved successfully', 'user_data': response.get('Item', {})})
     except NoCredentialsError:
@@ -100,9 +100,9 @@ def update_user():
         if not user_data.get('id'):
             return jsonify({'error': 'id is a required field'}), 400
         
-        # Ensure id is included in the item
+        # Ensure id is included in the item and is an integer
         item = {
-            'id': user_data['id'],
+            'id': int(user_data['id']),
             'name': user_data.get('name'),
             # Include other attributes as necessary
         }
@@ -132,7 +132,7 @@ def delete_user():
             return jsonify({'error': 'id is a required field'}), 400
         
         # Delete user data from DynamoDB
-        response = table.delete_item(Key={'id': id})
+        response = table.delete_item(Key={'id': int(id)})
         
         return jsonify({'message': 'User deleted successfully', 'response': response}), 200
     except NoCredentialsError:
