@@ -118,7 +118,7 @@ def delete_user(id):
 
         response = table.delete_item(Key={'id': id})
 
-        return jsonify({'message': 'User {} deleted successfully'.format(item.get('Item')), 'response': response}), 200
+        return jsonify({'message': 'User {} deleted successfully'.format(item), 'response': response}), 200
     
     except ClientError as e:
         return handle_dynamodb_exception(e)
