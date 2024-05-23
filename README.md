@@ -2,7 +2,7 @@
 
 ## Escolha da Região de Implantação
 
-A escolha da região para implantação deve considerar tanto os custos quanto o desempenho. Aqui estão alguns pontos que foram considerados:
+A escolha da região para implantação deve considerar tanto os custos quanto o desempenho.
 
 - **Custos**: As tarifas de serviços AWS variam entre as regiões. Regiões como us-east-1 (N. Virginia) geralmente têm preços mais baixos comparados a outras regiões. Mas pro meu caso, perderíamos muito desempenho.
 
@@ -10,7 +10,7 @@ A escolha da região para implantação deve considerar tanto os custos quanto o
 
 ## Diagrama da Arquitetura AWS
 
-![Diagrama da Arquitetura](link_para_diagrama.png)
+![Diagrama da Arquitetura](img/diagrama.png)
 
 Coisas para incluir no diagrama:
 
@@ -30,44 +30,79 @@ DynamoDB para banco de dados
 
 - **Banco de Dados**: Usei o DynamoDB pela sua baixa latência e escalabilidade global. Alternativamente, eu poderia ter usado o MySQL por exemplo por sua facilidade de gerenciamento.
 
-## Guia Passo a Passo para Execução dos Scripts
+## Guia Passo a Passo para a Execução dos Scripts
+
+### Comece clonando esse repositório em sua máquina
+
+```console
+git clone https://github.com/rodme02/app_cloud.git
+```
+
+### Instalar o AWS CLI
+
+Primeiro é necessário ter o AWS CLI instalado na máquina. Isso pode variar dependendo do sistema operacional. O [site oficial](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) fornece informações de como instalar em cada OS.
 
 ### Configurar Credenciais AWS:
+
+Rode o comando abaixo para configurar as credencias, você vai precisar insirir a sua Access Key ID e Secret Access Key. No campo region coloque **sa-east-1**.
 
 ```console
 aws configure
 ```
 
-### Validar o Script CloudFormation:
+### Criação da Stack:
 
+A criação da stack pode ser feita executando o script `create_stack.sh` contido dentro da pasta `scripts_stack`
 
-```console
-aws cloudformation validate-template --template-body file://projeto_aws.yaml
-```
-
-### Criar a Stack CloudFormation:
+Considerando que você já está dentro do diretório do projeto:
 
 ```console
-aws cloudformation create-stack --stack-name RodStack --template-body file://projeto_aws.yaml --capabilities CAPABILITY_IAM
+./scripts_stack/create_stack.sh
 ```
 
-### Monitorar a Criação da Stack:
+### Atualizar a Stack:
+
+A atualização da stack pode ser feita assim:
 
 ```console
-aws cloudformation describe-stacks --stack-name RodStack
+./scripts_stack/update_stack.sh
 ```
 
-### Atualizar a Stack CloudFormation:
+### Deleção da Stack:
+
+Para deletar a stack, rode:
 
 ```console
-aws cloudformation update-stack --stack-name RodStack --template-body file://projeto_aws.yaml --capabilities CAPABILITY_IAM
+./scripts_stack/delete_stack.sh
 ```
 
-### Deletar a Stack CloudFormation:
+### Alguns scripts para testar a aplicação:
+
+Criar um novo usuário:
 
 ```console
-aws cloudformation delete-stack --stack-name RodStack
+./scripts_user/create_user.sh <id> <nome>
 ```
+
+Dar GET em um usuário existente:
+
+```console
+./scripts_user/get_user.sh <id>
+```
+
+Atualizar um usuário existente:
+
+```console
+./scripts_user/update_user.sh <id> <nome>
+```
+
+Deletar um usuário:
+
+```console
+./scripts_user/delete_user.sh <id>
+```
+
+Esses scripts já pegam o DNS do ALB para facilitar os testes.
 
 ## Previsão de Custos
 
