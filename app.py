@@ -112,7 +112,7 @@ def update_user():
 @app.route('/delete_user/<int:id>', methods=['DELETE'])
 def delete_user(id):
     try:
-        item = table.get_item(Key={'id': id})
+        item = table.get_item(Key={'id': id}).get('Item')
 
         response = table.delete_item(Item=item)
 
