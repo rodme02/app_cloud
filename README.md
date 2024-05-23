@@ -52,7 +52,7 @@ aws configure
 
 ### Criação da Stack:
 
-A criação da stack pode ser feita executando o script `create_stack.sh` contido dentro da pasta `scripts_stack`
+A criação da stack pode ser feita executando o script `create_stack.sh` contido dentro da pasta `scripts_stack`.
 
 Considerando que você já está dentro do diretório do projeto:
 
