@@ -41,16 +41,16 @@ def add_user():
         user_data = request.json
         
         # Validate input
-        if not user_data.get('user_id') or not user_data.get('name'):
-            return jsonify({'error': 'user_id and name are required fields'}), 400
+        if not user_data.get('id') or not user_data.get('name'):
+            return jsonify({'error': 'id and name are required fields'}), 400
         
-        # Ensure user_id is included in the item
+        # Ensure id is included in the item
         item = {
-            'user_id': user_data['user_id'],
+            'id': user_data['id'],
             'name': user_data['name'],
         }
         
-        if 'user_id' in table.get_item(Key={'user_id': user_data['user_id']}).get('Item', {}):
+        if 'id' in table.get_item(Key={'id': user_data['id']}).get('Item', {}):
             return jsonify({'error': 'User already exists, post to /update_user to update an user.'}), 400
         # Save data to DynamoDB
         response = table.put_item(Item=item)
@@ -69,15 +69,15 @@ def add_user():
 @app.route('/get_user', methods=['GET'])
 def get_user():
     try:
-        # Get user_id from the request
-        user_id = request.args.get('user_id')
+        # Get id from the request
+        id = request.args.get('id')
         
         # Validate input
-        if not user_id:
-            return jsonify({'error': 'user_id is a required field'}), 400
+        if not id:
+            return jsonify({'error': 'id is a required field'}), 400
         
         # Get user data from DynamoDB
-        response = table.get_item(Key={'user_id': user_id})
+        response = table.get_item(Key={'id': id})
         
         return jsonify({'message': 'User retrieved successfully', 'user_data': response.get('Item', {})})
     except NoCredentialsError:
@@ -97,12 +97,12 @@ def update_user():
         user_data = request.json
         
         # Validate input
-        if not user_data.get('user_id'):
-            return jsonify({'error': 'user_id is a required field'}), 400
+        if not user_data.get('id'):
+            return jsonify({'error': 'id is a required field'}), 400
         
-        # Ensure user_id is included in the item
+        # Ensure id is included in the item
         item = {
-            'user_id': user_data['user_id'],
+            'id': user_data['id'],
             'name': user_data.get('name'),
             # Include other attributes as necessary
         }
@@ -124,15 +124,15 @@ def update_user():
 @app.route('/delete_user', methods=['DELETE'])
 def delete_user():
     try:
-        # Get user_id from the request
-        user_id = request.args.get('user_id')
+        # Get id from the request
+        id = request.args.get('id')
         
         # Validate input
-        if not user_id:
-            return jsonify({'error': 'user_id is a required field'}), 400
+        if not id:
+            return jsonify({'error': 'id is a required field'}), 400
         
         # Delete user data from DynamoDB
-        response = table.delete_item(Key={'user_id': user_id})
+        response = table.delete_item(Key={'id': id})
         
         return jsonify({'message': 'User deleted successfully', 'response': response}), 200
     except NoCredentialsError:
