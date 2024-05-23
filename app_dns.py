@@ -10,7 +10,7 @@ logger = logging.getLogger()
 def dns_finder():
     try:
         # Run the bash script to get the DNS
-        result = subprocess.run(['bash', 'dns_finder.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(['bash', 'get_dns.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         
         if result.returncode != 0:
             logger.error(f"Error getting DNS: {result.stderr}")
@@ -41,7 +41,7 @@ def check_health(dns):
 
 def add_user(dns, user_data):
     try:
-        url = f"http://{dns}/add_user"
+        url = f"http://{dns}/users"
         response = requests.post(url, json=user_data)
         
         if response.status_code == 200:
@@ -56,7 +56,7 @@ def add_user(dns, user_data):
 
 def get_user(dns, user_id):
     try:
-        url = f"http://{dns}/get_user?user_id={user_id}"
+        url = f"http://{dns}/users/{user_id}"
         response = requests.get(url)
         
         if response.status_code == 200:
@@ -72,7 +72,7 @@ def get_user(dns, user_id):
 
 def update_user(dns, user_data):
     try:
-        url = f"http://{dns}/update_user"
+        url = f"http://{dns}/users/{user_data['user_id']}"
         response = requests.put(url, json=user_data)
         
         if response.status_code == 200:
@@ -87,7 +87,7 @@ def update_user(dns, user_data):
 
 def delete_user(dns, user_id):
     try:
-        url = f"http://{dns}/delete_user?user_id={user_id}"
+        url = f"http://{dns}/users/{user_id}"
         response = requests.delete(url)
         
         if response.status_code == 200:
@@ -108,8 +108,7 @@ def main():
             users = [
                 {'user_id': 'user1', 'name': 'Test User 1'},
                 {'user_id': 'user2', 'name': 'Test User 2'},
-                {'user_id': 'user3', 'name': 'Test User 3'},
-                {'user_id': 'mat', 'name': 'matt'}
+                {'user_id': 'user3', 'name': 'Test User 3'}
             ]
 
             for user in users:
