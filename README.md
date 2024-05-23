@@ -46,7 +46,7 @@ Primeiro é necessário ter o AWS CLI instalado na máquina. Isso pode variar de
 
 Rode o comando abaixo para configurar as credencias, você vai precisar insirir a sua Access Key ID e Secret Access Key. No campo region coloque **sa-east-1**.
 
-```console
+```bash
 aws configure
 ```
 
