@@ -113,8 +113,8 @@ def update_user():
 def delete_user(id):
     try:
         item = table.get_item(Key={'id': id})
-        
-        response = table.delete_item(Key={'id': id})
+
+        response = table.delete_item(Item=item)
 
         item['id'] = int(item['id'])
 
