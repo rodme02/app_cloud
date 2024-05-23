@@ -12,16 +12,6 @@ A escolha da região para implantação deve considerar tanto os custos quanto o
 
 ![Diagrama da Arquitetura](img/diagrama.png)
 
-![Diagrama da Arquitetura](img/diagrama2.png)
-
-Coisas para incluir no diagrama:
-
-VPC com sub-redes públicas e privadas
-Instâncias EC2
-Load Balancer (health checks)
-Auto Scaling Groups
-DynamoDB para banco de dados
-
 ## Decisões Técnicas
 
 - **VPC**: Optei por uma VPC com sub-redes públicas e privadas para garantir segurança e controle de tráfego. As sub-redes privadas hospedam servidores de aplicação e banco de dados, enquanto as sub-redes públicas hospedam o load balancer.
