@@ -78,6 +78,8 @@ def get_user(id):
 
         item = response.get('Item')
 
+        item['id'] = int(item['id'])
+
         if not item:
             return jsonify({'error': 'User not found'}), 404
 
@@ -111,6 +113,8 @@ def update_user():
 def delete_user(id):
     try:
         item = table.get_item(Key={'id': id})
+
+        item['id'] = int(item['id'])
 
         response = table.delete_item(Key={'id': id})
 
