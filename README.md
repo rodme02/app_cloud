@@ -34,7 +34,7 @@ DynamoDB para banco de dados
 
 ### Comece clonando esse repositório em sua máquina
 
-```console
+```bash
 git clone https://github.com/rodme02/app_cloud.git
 ```
 
@@ -56,7 +56,7 @@ A criação da stack pode ser feita executando o script `create_stack.sh` contid
 
 Considerando que você já está dentro do diretório do projeto:
 
-```console
+```bash
 ./scripts_stack/create_stack.sh
 ```
 
@@ -64,7 +64,7 @@ Considerando que você já está dentro do diretório do projeto:
 
 A atualização da stack pode ser feita assim:
 
-```console
+```bash
 ./scripts_stack/update_stack.sh
 ```
 
@@ -72,7 +72,7 @@ A atualização da stack pode ser feita assim:
 
 Para deletar a stack, rode:
 
-```console
+```bash
 ./scripts_stack/delete_stack.sh
 ```
 
@@ -80,25 +80,25 @@ Para deletar a stack, rode:
 
 Criar um novo usuário:
 
-```console
+```bash
 ./scripts_user/create_user.sh <id> <nome>
 ```
 
 Dar GET em um usuário existente:
 
-```console
+```bash
 ./scripts_user/get_user.sh <id>
 ```
 
 Atualizar um usuário existente:
 
-```console
+```bash
 ./scripts_user/update_user.sh <id> <nome>
 ```
 
 Deletar um usuário:
 
-```console
+```bash
 ./scripts_user/delete_user.sh <id>
 ```
 
