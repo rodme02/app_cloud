@@ -116,6 +116,8 @@ def delete_user(id):
 
         item = response.get('Item')
 
+        item['id'] = int(item['id'])
+
         if not item:
             return jsonify({'error': 'User not found'}), 404
 
