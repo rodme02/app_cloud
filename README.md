@@ -1,13 +1,5 @@
 # Documentação do Projeto AWS
 
-## Escolha da Região de Implantação
-
-A escolha da região para implantação deve considerar tanto os custos quanto o desempenho.
-
-- **Custos**: As tarifas de serviços AWS variam entre as regiões. Regiões como us-east-1 (N. Virginia) geralmente têm preços mais baixos comparados a outras regiões. Mas pro meu caso, perderíamos muito desempenho.
-
-- **Desempenho**: Para minimizar a latência, escolhi a região mais próxima que é a sa-east-1 (São Paulo) por estar perto de potenciais usuários, diminuindo assim a latência.
-
 ## Diagrama da Arquitetura AWS
 
 ![Diagrama da Arquitetura](img/diagrama.png)
@@ -121,15 +113,15 @@ Esses scripts já pegam o DNS do ALB para facilitar os testes.
 ## Relatório de Custos Detalhado
 
 ### Instâncias EC2
-- Tipo de Instância: t2.micro.
-- Custo Mensal Aproximado: $20.37/mês (considerando uma média de 3 instâncias).
+- **Tipo de Instância**: t2.micro.
+- **Custo Mensal Aproximado**: $20.37/mês (considerando uma média de 3 instâncias).
 
 ### Elastic Load Balancer:
-- Custo Mensal Aproximado: $26.43/mês (1 Application Load Balancer).
+- **Custo Mensal Aproximado**: $26.43/mês (1 Application Load Balancer).
 
 ### DynamoDB
-- Custo _Upfront_: $270.00.
-- Custo Mensal Aproximado: $39.70/mês (para 1GB).
+- **Custo _Upfront_**: $270.00.
+- **Custo Mensal Aproximado**: $39.70/mês (para 1GB).
 
 ### Custo Total
 
@@ -138,11 +130,10 @@ Esses scripts já pegam o DNS do ALB para facilitar os testes.
 ![Estimativa de Custos](img/costs.png)
 
 ## Otimizações Possíveis
-- Reduzir o Tipo de Instância EC2: Escolher tipos de instância com menor custo para ambientes de teste ou desenvolvimento (no caso já estou usando uma das instâncias mais baratas).
-- Ajustar o Auto Scaling: Configurar políticas de escalabilidade para aumentar ou diminuir instâncias com base em métricas específicas como utilização de CPU se a aplicação for pesada nesse sentido.
-- Usar DynamoDB On-Demand: Se os padrões de acesso à tabela DynamoDB forem imprevisíveis, considerar o modelo de capacidade sob demanda para evitar provisionamento excessivo.
-- Eliminar Recursos Inativos: Monitorar e eliminar recursos que não estão sendo usados para evitar custos desnecessários.
-- Reservar Instâncias EC2: Se a carga de trabalho for constante, considerar a compra de instâncias reservadas para reduzir custos a longo prazo.
+- **Instâncias EC2**: Poderíamos utilizar instâncias reservadas que acabam sendo mais baratas do que as instâncias sob demanda que estou utilizando.
+- **Auto Scaling**: Configurar políticas de escalabilidade para aumentar ou diminuir instâncias com base em métricas específicas como utilização de CPU se a aplicação for pesada nesse sentido.
+- **DynamoDB**: Se os padrões de acesso à tabela DynamoDB forem imprevisíveis, considerar o modelo de capacidade sob demanda para evitar provisionamento excessivo. Além disso o banco de dados RDS seria uma boa opção, já que é mais barato que o DynamoDB.
+- **Região**: A região escolhida também impacta diretamente nos custos, uma região como **us-east-1 (N. Virginia)** é mais barata do que a **sa-east-1 (São Paulo)** mas perderíamos desempenho por ela estar mais longe de pontenciais usuários.
 
 ## Conclusão
 A configuração proposta fornece uma infraestrutura robusta e escalável na AWS. As decisões técnicas foram tomadas com base na necessidade de criar um ambiente altamente disponível e seguro, enquanto as otimizações propostas visam reduzir custos sem comprometer a funcionalidade e a performance da aplicação. ​
