@@ -162,6 +162,10 @@ As otimizações sugeridas, como o uso de instâncias EC2 reservadas e política
 - [Amazon DynamoDB Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
 - [AWS Auto Scaling](https://aws.amazon.com/autoscaling/)
 - [Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+
+### Link para o repositório
+
+https://github.com/rodme02/app_cloud
 - [AWS Pricing](https://aws.amazon.com/pricing/)
 - [AWS CLI User Guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 - [CloudFormation Templates](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html)
