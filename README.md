@@ -122,23 +122,23 @@ Esses scripts já pegam o DNS do ALB para facilitar os testes.
 
 ### Instâncias EC2
 - Tipo de Instância: t2.micro.
-- Custo Mensal Aproximado: $0.0116/h por instância. Com 2 a 10 instâncias rodando continuamente:
-  - Mínimo: 2 * $0.0116/h * 730 horas = $16.94/mês.
-  - Máximo: 10 * $0.0116/h * 730 horas = $84.70/mês.
+- Custo Mensal Aproximado: $20.37/mês (considerando uma média de 3 instâncias).
 
-### Application Load Balancer (ALB):
-- Custo Base: $18.00/mês.
-- Custo por Hora: $0.0225/h.
-- Custo por GB de Dados Processados: $0.008/GB.
+### Elastic Load Balancer:
+- Custo Mensal Aproximado: $26.43/mês (1 Application Load Balancer).
 
 ### DynamoDB
-- Provisioned Throughput: 5 RCU e 5 WCU.
-- 5 RCU: $0.0065 por hora.
-- 5 WCU: $0.0065 por hora.
-- Custo Mensal Aproximado: (5 * $0.0065 + 5 * $0.0065) * 730 = $47.45/mês.
+- Custo _Upfront_: $270.00.
+- Custo Mensal Aproximado: $39.70/mês (para 1GB).
+
+### Custo Total
+
+  Somando todos os gastos, teremos um custo de $270.00 _upfront_ mais um valor de $86.50/mês.
+
+![Estimativa de Custos](img/costs.png)
 
 ## Otimizações Possíveis
-- Reduzir o Tipo de Instância EC2: Escolher tipos de instância com menor custo para ambientes de teste ou desenvolvimento (no caso já estou usando a instância mais barata).
+- Reduzir o Tipo de Instância EC2: Escolher tipos de instância com menor custo para ambientes de teste ou desenvolvimento (no caso já estou usando uma das instâncias mais baratas).
 - Ajustar o Auto Scaling: Configurar políticas de escalabilidade para aumentar ou diminuir instâncias com base em métricas específicas como utilização de CPU se a aplicação for pesada nesse sentido.
 - Usar DynamoDB On-Demand: Se os padrões de acesso à tabela DynamoDB forem imprevisíveis, considerar o modelo de capacidade sob demanda para evitar provisionamento excessivo.
 - Eliminar Recursos Inativos: Monitorar e eliminar recursos que não estão sendo usados para evitar custos desnecessários.
