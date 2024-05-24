@@ -2,6 +2,20 @@
 
 ### Rodrigo Medeiros
 
+## Sumário
+
+- [Diagrama da Arquitetura AWS](#diagrama-da-arquitetura-aws)
+- [Decisões Técnicas](#decisões-técnicas)
+  - [Formato e Estrutura](#formato-e-estrutura)
+  - [Parâmetros](#parâmetros)
+- [Recursos](#recursos)
+- [Outputs](#outputs)
+- [Guia Passo a Passo para a Execução dos Scripts](#guia-passo-a-passo-para-a-execução-dos-scripts)
+- [Relatório de Custos Detalhado](#relatório-de-custos-detalhado)
+- [Otimizações Possíveis](#otimizações-possíveis)
+- [Conclusão](#conclusão)
+- [Referências](#referências)
+
 ## Diagrama da Arquitetura AWS
 
 ![Diagrama da Arquitetura](img/diagrama.png)
@@ -143,3 +157,16 @@ Esses scripts já pegam o DNS do ALB para facilitar os testes.
 A configuração proposta estabelece uma infraestrutura robusta e escalável na AWS, utilizando AWS CloudFormation em YAML para gerenciar a infraestrutura como código. A flexibilidade dos parâmetros configuráveis permite ajustes dinâmicos para diferentes ambientes, enquanto a arquitetura inclui recursos essenciais como VPC isolada, sub-redes distribuídas, Internet Gateway, Application Load Balancer e DynamoDB. Isso garante alta disponibilidade, segurança e desempenho eficiente da aplicação.
 
 As otimizações sugeridas, como o uso de instâncias EC2 reservadas e políticas de escalabilidade baseadas em métricas, visam reduzir custos sem comprometer a funcionalidade. A documentação detalhada e os scripts fornecidos facilitam a implementação e gestão da stack. Em resumo, a solução atende aos requisitos técnicos, de desempenho e eficiência de custos, garantindo uma operação eficiente e segura, com potencial de crescimento futuro.​
+
+## Referências
+
+- [AWS CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+- [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/)
+- [AWS VPC User Guide](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
+- [Amazon DynamoDB Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
+- [AWS Auto Scaling](https://aws.amazon.com/autoscaling/)
+- [Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+- [AWS Pricing](https://aws.amazon.com/pricing/)
+- [AWS CLI User Guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
+- [CloudFormation Templates](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html)
+- [AWS IAM Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
