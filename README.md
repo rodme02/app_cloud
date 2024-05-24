@@ -64,6 +64,8 @@ aws configure
 
 ### Criação da Stack:
 
+> Se está tendo problema de permissão para executar os scripts rode `chmod +x <script>.sh`
+
 A criação da stack pode ser feita executando o script `create_stack.sh` contido dentro da pasta `scripts_stack`.
 
 Considerando que você já está dentro do diretório do projeto:
