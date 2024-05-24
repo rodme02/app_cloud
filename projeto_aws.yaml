@@ -1,0 +1,413 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Infraestrutura AWS com VPC, EC2 Auto Scaling, ALB, e DynamoDB
+
+Parameters:
+
+  # Tipo de Instância EC2
+  InstanceType:
+    Description: Tipo da Instância EC2
+    Type: String
+    Default: t2.micro
+
+  # Número minimo de instâncias no ASG
+  MinInstances:
+    Description: Número mínimo de instâncias no Auto Scaling Group
+    Type: Number
+    Default: 2
+
+  # Número máximo de instâncias no ASG
+  MaxInstances:
+    Description: Número máximo de instâncias no Auto Scaling Group
+    Type: Number
+    Default: 10
+
+  # Nome da Tabela DynamoDB
+  DynamoDBTableName:
+    Description: Nome da Tabela DynamoDB
+    Type: String
+    Default: UsersTable
+
+  # ID da AMI
+  ImageId:
+    Description: ID da AMI para as instâncias EC2
+    Type: String
+    Default: ami-0cdc2f24b2f67ea17
+
+Resources:
+
+  # Configuração da VPC
+  VPCResource:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: VPCResource
+
+  # Gateway de Internet para a VPC
+  IGWResource:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: IGWResource
+
+  # Tabela de Rotas para a VPC        
+  RouteTableResource:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPCResource
+      Tags:
+        - Key: Name
+          Value: RouteTableResource
+
+  # Configuração da Rota de Internet        
+  RouteInternet:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref RouteTableResource
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IGWResource
+
+  # Subrede Pública Primária
+  PrimaryPublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCResource
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: sa-east-1a 
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PrimaryPublicSubnet
+
+  # Subrede Pública Secundária
+  SecondaryPublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCResource
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: sa-east-1c 
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: SecondaryPublicSubnet
+
+  # Associação da Subrede Primária com a Tabela de Rotas
+  PrimarySubnetRouteAssoc:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrimaryPublicSubnet
+      RouteTableId: !Ref RouteTableResource
+
+  # Associação da Subrede Secundária com a Tabela de Rotas
+  SecondarySubnetRouteAssoc:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SecondaryPublicSubnet
+      RouteTableId: !Ref RouteTableResource
+
+  # Anexar Gateway de Internet à VPC
+  AttachIGWToVPC:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPCResource
+      InternetGatewayId: !Ref IGWResource
+
+  # Grupo de Segurança para Instâncias EC2
+  EC2SecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Habilitar acesso SSH e HTTP
+      VpcId: !Ref VPCResource
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: "tcp"
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Grupo de Segurança para o ALB
+  ALBWebSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Permitir trafego HTTP e HTTPS para o ALB
+      VpcId: !Ref VPCResource
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Perfil de Instância IAM para EC2
+  IAMInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Roles:
+        - Ref: EC2InstanceRole
+
+  # Função IAM para Instâncias EC2
+  EC2InstanceRole:
+    Type: 'AWS::IAM::Role'
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: DynamoDBAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:DescribeTable
+                Resource: "*"
+
+  # Configuração de Lançamento para o Auto Scaling
+  AutoScalingLaunchConfig:
+    Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Properties:
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+      #KeyName: MyKeyPair
+      IamInstanceProfile: !Ref IAMInstanceProfile
+
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          set -e
+
+          exec > /var/log/user-data.log 2>&1
+
+          sudo apt update -y
+
+          sudo apt install -y python3-full
+
+          sudo apt install -y python3-pip
+
+          sudo apt install -y git
+
+          git clone https://github.com/rodme02/app_cloud.git /home/ec2-user/yourapp
+
+          cd /home/ec2-user/yourapp
+
+          sudo pip3 install -r requirements.txt
+
+          sudo python3 app.py &
+
+  # Grupo de Auto Scaling
+  EC2AutoScalingGroup:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      LaunchConfigurationName: !Ref AutoScalingLaunchConfig
+      MinSize: !Ref MinInstances
+      MaxSize: !Ref MaxInstances
+      DesiredCapacity: !Ref MinInstances
+      TargetGroupARNs:
+        - !Ref ALBTargetGroup
+      VPCZoneIdentifier:
+        - !Ref PrimaryPublicSubnet
+        - !Ref SecondaryPublicSubnet
+      Tags:
+        - Key: Name
+          Value: EC2AutoScalingGroup
+          PropagateAtLaunch: true
+
+  # Política de Escalonamento para Aumentar Capacidade
+  AutoScalingPolicyUp:
+    Type: 'AWS::AutoScaling::ScalingPolicy'
+    Properties:
+      AutoScalingGroupName: !Ref EC2AutoScalingGroup
+      PolicyType: SimpleScaling
+      ScalingAdjustment: 1
+      AdjustmentType: ChangeInCapacity
+      Cooldown: 60
+
+  # Política de Escalonamento para Reduzir Capacidade
+  AutoScalingPolicyDown:
+    Type: 'AWS::AutoScaling::ScalingPolicy'
+    Properties:
+      AutoScalingGroupName: !Ref EC2AutoScalingGroup
+      PolicyType: SimpleScaling
+      ScalingAdjustment: -1
+      AdjustmentType: ChangeInCapacity
+      Cooldown: 60
+
+  # Alarme para Escalonamento para Cima
+  HighNetworkInAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Alarme se NetworkIn exceder 20000 pacotes por segundo'
+      Namespace: 'AWS/EC2'
+      MetricName: 'NetworkIn'
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref EC2AutoScalingGroup
+      Statistic: Sum
+      Period: 10
+      EvaluationPeriods: 1
+      Threshold: 20000
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AutoScalingPolicyUp
+
+  # Alarme para Escalonamento para Baixo
+  LowNetworkInAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Alarme se NetworkIn cair abaixo de 5000 pacotes por segundo'
+      Namespace: 'AWS/EC2'
+      MetricName: 'NetworkIn'
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref EC2AutoScalingGroup
+      Statistic: Sum
+      Period: 10
+      EvaluationPeriods: 1
+      Threshold: 5000
+      ComparisonOperator: LessThanThreshold
+      AlarmActions:
+        - !Ref AutoScalingPolicyDown
+
+  # Application Load Balancer (ALB)
+  ApplicationLoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+        - !Ref PrimaryPublicSubnet
+        - !Ref SecondaryPublicSubnet
+      SecurityGroups:
+        - !Ref ALBWebSecurityGroup
+
+  # Listener para o ALB
+  ALBHTTPListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  # Grupo de Destino para o ALB
+  ALBTargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      VpcId: !Ref VPCResource
+      Port: 80
+      Protocol: HTTP
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: "/health"
+      HealthCheckIntervalSeconds: 60
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
+
+  # Tabela DynamoDB
+  UsersDynamoDBTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref DynamoDBTableName
+      AttributeDefinitions:
+        - AttributeName: 'id'
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: 'id'
+          KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  # Função IAM para Acesso ao DynamoDB
+  DynamoDBIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: 'Allow'
+            Principal: 
+              Service: 
+                - 'ec2.amazonaws.com'
+            Action: 
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies: 
+        - PolicyName: 'DynamoDBAccessPolicy'
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement: 
+              - Effect: 'Allow'
+                Action: 
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:UpdateItem'
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:DescribeTable'
+                Resource: 
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${UsersDynamoDBTable}'
+
+  # Perfil de Instância IAM Personalizado
+  CustomInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: '/'
+      Roles: 
+        - Ref: 'DynamoDBIAMRole'
+
+Outputs:
+
+  # ID da VPC
+  VPCIdOutput:
+    Description: "ID da VPC"
+    Value: !Ref VPCResource
+
+  # ID da Subrede Pública Primária
+  PublicSubnetOneIdOutput:
+    Description: "ID da primeira subrede pública"
+    Value: !Ref PrimaryPublicSubnet
+
+  # ID da Subrede Pública Secundária
+  PublicSubnetTwoIdOutput:
+    Description: "ID da segunda subrede pública"
+    Value: !Ref SecondaryPublicSubnet
+  
+  # Nome do Grupo de Auto Scaling
+  AutoScalingGroupNameOutput:
+    Description: "Nome do Grupo de Auto Scaling"
+    Value: !Ref EC2AutoScalingGroup
+
+  # DNS do Application Load Balancer
+  ALBDNSNameOutput:
+    Description: "Nome DNS do ALB"
+    Value: !GetAtt ApplicationLoadBalancer.DNSName
+  
+  # Nome da Tabela DynamoDB
+  DynamoDBTableNameOutput:
+    Description: "Nome da Tabela DynamoDB"
+    Value: !Ref UsersDynamoDBTable
