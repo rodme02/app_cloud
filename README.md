@@ -36,6 +36,10 @@ Optei pelo uso do AWS CloudFormation em YAML. Essa abordagem permite gerenciar a
 
 Definição de outputs para VPC ID, Subnet IDs, Auto Scaling Group Name, ALB DNS Name, e DynamoDB Table Name. Isso facilita a recuperação e utilização de informações chave da infraestrutura provisionada, permitindo integração e verificação eficiente.
 
+### AMI 
+
+A Amazon Machine Image (AMI) escolhida para este projeto é uma imagem padrão da Amazon Linux 2. Esta AMI oferece um ambiente seguro, estável e de alto desempenho para executar aplicações na nuvem AWS. A escolha desta AMI foi baseada em sua otimização para a infraestrutura da AWS, suporte a longo prazo e integração com serviços AWS, como CloudWatch e SSM.
+
 ## Guia Passo a Passo para a Execução dos Scripts
 
 ### Comece clonando esse repositório em sua máquina
