@@ -1,5 +1,7 @@
 # Documentação do Projeto AWS
 
+## Rodrigo Medeiros
+
 ## Diagrama da Arquitetura AWS
 
 ![Diagrama da Arquitetura](img/diagrama.png)
