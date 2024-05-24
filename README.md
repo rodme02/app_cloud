@@ -61,7 +61,7 @@ Primeiro é necessário ter o AWS CLI instalado na máquina. Isso pode variar de
 
 ### Configurar Credenciais AWS:
 
-Rode o comando abaixo para configurar as credencias, você vai precisar inserir a sua Access Key ID e Secret Access Key. No campo region coloque **sa-east-1**.
+Rode o comando abaixo para configurar as credencias, você vai precisar inserir a sua Access Key ID e Secret Access Key. No campo region coloque **sa-east-1** e para output format **json**.
 
 ```bash
 aws configure
@@ -162,11 +162,11 @@ As otimizações sugeridas, como o uso de instâncias EC2 reservadas e política
 - [Amazon DynamoDB Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
 - [AWS Auto Scaling](https://aws.amazon.com/autoscaling/)
 - [Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
-
-### Link para o repositório
-
-https://github.com/rodme02/app_cloud
 - [AWS Pricing](https://aws.amazon.com/pricing/)
 - [AWS CLI User Guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 - [CloudFormation Templates](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html)
 - [AWS IAM Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
+
+### Link para o repositório
+
+https://github.com/rodme02/app_cloud
