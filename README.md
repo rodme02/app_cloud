@@ -139,8 +139,7 @@ Esses scripts já pegam o DNS do ALB para facilitar os testes.
 - **Região**: A região escolhida também impacta diretamente nos custos, uma região como **us-east-1 (N. Virginia)** é mais barata do que a **sa-east-1 (São Paulo)** mas perderíamos desempenho por ela estar mais longe de pontenciais usuários.
 
 ## Conclusão
-A configuração proposta fornece uma infraestrutura robusta e escalável na AWS. As decisões técnicas foram tomadas com base na necessidade de criar um ambiente altamente disponível e seguro, enquanto as otimizações propostas visam reduzir custos sem comprometer a funcionalidade e a performance da aplicação. ​
 
-## Repositório com o Código CloudFormation
+A configuração proposta estabelece uma infraestrutura robusta e escalável na AWS, utilizando AWS CloudFormation em YAML para gerenciar a infraestrutura como código. A flexibilidade dos parâmetros configuráveis permite ajustes dinâmicos para diferentes ambientes, enquanto a arquitetura inclui recursos essenciais como VPC isolada, sub-redes distribuídas, Internet Gateway, Application Load Balancer e DynamoDB. Isso garante alta disponibilidade, segurança e desempenho eficiente da aplicação.
 
-[Link do repositório]
+As otimizações sugeridas, como o uso de instâncias EC2 reservadas e políticas de escalabilidade baseadas em métricas, visam reduzir custos sem comprometer a funcionalidade. A documentação detalhada e os scripts fornecidos facilitam a implementação e gestão da stack. Em resumo, a solução atende aos requisitos técnicos, de desempenho e eficiência de custos, garantindo uma operação eficiente e segura, com potencial de crescimento futuro.​
