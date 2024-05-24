@@ -18,6 +18,7 @@ Optei pelo uso do AWS CloudFormation em YAML. Essa abordagem permite gerenciar a
 - **MinInstances**: Define o número mínimo de instâncias no Auto Scaling Group, com valor padrão de 2. Isso garante a disponibilidade mínima da aplicação mesmo em caso de falha de instâncias, assegurando resiliência.
 - **MaxInstances**: Define o número máximo de instâncias no Auto Scaling Group, com valor padrão de 10. Isso limita o escalonamento para controlar custos e evitar sobrecarga do sistema.
 - **DynamoDBTableName**: Nome da tabela DynamoDB configurável via parâmetro, com valor padrão `UsersTable`. Proporciona flexibilidade para usar diferentes nomes de tabela conforme as necessidades do projeto, facilitando a reutilização do template.
+- **ImageId**: ID da AMI para as instâncias EC2, configurável via parâmetro, com valor padrão **'ami-0cdc2f24b2f67ea17'** que é a Amazon Linux 2 AMI (HVM), SSD Volume Type. Isso permite a flexibilidade de usar diferentes AMIs conforme as necessidades do projeto, facilitando a adaptação do ambiente para diferentes requisitos e regiões.
 
 ### Recursos
 
@@ -26,19 +27,15 @@ Optei pelo uso do AWS CloudFormation em YAML. Essa abordagem permite gerenciar a
 - **RouteTableResource e RouteInternet**: Criação de uma tabela de rotas e uma rota padrão para o Internet Gateway. Gerencia o tráfego de rede, permitindo acesso à internet para sub-redes públicas.
 - **PrimaryPublicSubnet e SecondaryPublicSubnet**: Criação de duas sub-redes públicas em diferentes zonas de disponibilidade (`sa-east-1a` e `sa-east-1c`). Isso distribui os recursos em múltiplas zonas de disponibilidade para alta disponibilidade e tolerância a falhas.
 - **PrimarySubnetRouteAssoc e SecondarySubnetRouteAssoc**: Associação das sub-redes públicas à tabela de rotas. Garante que as sub-redes públicas tenham rotas para o Internet Gateway, permitindo a conectividade externa.
-- **EC2LaunchConfiguration**: Criação de uma configuração de lançamento EC2 com ImageId especificado e InstanceType configurável. Define parâmetros padrão para o lançamento de instâncias EC2 no Auto Scaling Group, facilitando a consistência e automação.
+- **AutoScalingLaunchConfig**: Criação de uma configuração de lançamento EC2 com ImageId e InstanceType. Define parâmetros padrão para o lançamento de instâncias EC2 no Auto Scaling Group, facilitando a consistência e automação.
 - **EC2AutoScalingGroup**: Criação de um Auto Scaling Group com políticas de escala mínima e máxima configuráveis. Permite escalabilidade automática baseada na demanda, garantindo desempenho e otimização de custos.
-- **ApplicationLoadBalancer e LoadBalancerListener**: Criação de um Application Load Balancer (ALB) e um listener na porta 80. Permite a distribuição de tráfego de entrada para instâncias EC2, melhorando a disponibilidade e balanceamento de carga.
+- **ApplicationLoadBalancer e ALBHTTPListener**: Criação de um Application Load Balancer (ALB) e um listener na porta 80. Permite a distribuição de tráfego de entrada para instâncias EC2, melhorando a disponibilidade e balanceamento de carga.
 - **UsersDynamoDBTable**: Criação de uma tabela DynamoDB com capacidade provisionada (5 RCU e 5 WCU). Fornece armazenamento de dados não relacional escalável e de alta performance para a aplicação.
 - **DynamoDBIAMRole e CustomInstanceProfile**: Criação de um papel IAM com permissões para acessar DynamoDB e um perfil de instância associado. Facilita o gerenciamento seguro e controlado de permissões, permitindo que as instâncias EC2 interajam com o DynamoDB de forma segura.
 
 ### Outputs
 
-Definição de outputs para VPC ID, Subnet IDs, Auto Scaling Group Name, ALB DNS Name, e DynamoDB Table Name. Isso facilita a recuperação e utilização de informações chave da infraestrutura provisionada, permitindo integração e verificação eficiente.
-
-### AMI 
-
-A Amazon Machine Image (AMI) escolhida para este projeto é uma imagem padrão da Amazon Linux 2. Esta AMI oferece um ambiente seguro, estável e de alto desempenho para executar aplicações na nuvem AWS. A escolha desta AMI foi baseada em sua otimização para a infraestrutura da AWS, suporte a longo prazo e integração com serviços AWS, como CloudWatch e SSM.
+Definição de outputs para **VPC ID**, **Subnet IDs**, **Auto Scaling Group Name**, **ALB DNS Name**, e **DynamoDB Table Name**. Isso facilita a recuperação e utilização de informações chave da infraestrutura provisionada, permitindo integração e verificação eficiente.
 
 ## Guia Passo a Passo para a Execução dos Scripts
 
