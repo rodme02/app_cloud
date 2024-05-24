@@ -6,10 +6,6 @@
 
 - [Diagrama da Arquitetura AWS](#diagrama-da-arquitetura-aws)
 - [Decisões Técnicas](#decisões-técnicas)
-  - [Formato e Estrutura](#formato-e-estrutura)
-  - [Parâmetros](#parâmetros)
-- [Recursos](#recursos)
-- [Outputs](#outputs)
 - [Guia Passo a Passo para a Execução dos Scripts](#guia-passo-a-passo-para-a-execução-dos-scripts)
 - [Relatório de Custos Detalhado](#relatório-de-custos-detalhado)
 - [Otimizações Possíveis](#otimizações-possíveis)
